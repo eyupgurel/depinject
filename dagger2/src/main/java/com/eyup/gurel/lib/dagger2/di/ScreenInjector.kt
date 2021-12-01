@@ -26,9 +26,13 @@ class ScreenInjector @Inject internal constructor(private val screenInjectors: M
 
     fun clear(fragment: Fragment) {
         if(fragment.arguments == null || cache.isEmpty()) return
-        val injector: AndroidInjector<*> = cache.remove(fragment.requireArguments().getString("instance_id"))!!
-        if (injector is ScreenComponent<*>) {
-            injector.disposableManager().dispose()
+        val instanceId = fragment.requireArguments().getString("instance_id")
+        if (cache.containsKey(instanceId)) {
+            val injector: AndroidInjector<*> =
+                cache.remove(instanceId)!!
+            if (injector is ScreenComponent<*>) {
+                injector.disposableManager().dispose()
+            }
         }
     }
 
